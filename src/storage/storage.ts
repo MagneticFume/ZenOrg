@@ -78,6 +78,17 @@ export const loadInternships = async (): Promise<Internship[]> => {
   }
 };
 
+export const loadInternshipById = async (id: string): Promise<Internship | null> => {
+  try {
+    const internships = await loadInternships();
+    const internship = internships.find(i => i.id === id);
+    return internship || null;
+  } catch (error) {
+    console.error('Error loading internship by id:', error);
+    return null;
+  }
+};
+
 export const createInternship = async (data: Omit<Internship, 'id' | 'createdAt' | 'updatedAt'>): Promise<Internship> => {
   const internships = await loadInternships();
   const newInternship: Internship = {

@@ -1,19 +1,19 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { colors, spacing, typography } from '../styles/theme';
+import { colors, spacing, shadows, borderRadius, typography } from '../styles/theme';
 
 interface FABProps {
   onPress: () => void;
 }
 
-export const FAB: React.FC<FABProps> = ({ onPress }) => {
+export const FAB = ({ onPress }: FABProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={styles.fab}
-      activeOpacity={0.8}
+      activeOpacity={0.85}
     >
-      <Text style={styles.fabText}>+</Text>
+      <Text style={styles.fabIcon}>+</Text>
     </TouchableOpacity>
   );
 };
@@ -21,24 +21,20 @@ export const FAB: React.FC<FABProps> = ({ onPress }) => {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    bottom: spacing.lg,
-    right: spacing.lg,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.accent,
+    bottom: spacing.xxl,
+    right: spacing.xl,
+    width: 60,
+    height: 60,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    ...shadows.large,
   },
-  fabText: {
+  fabIcon: {
     fontSize: 32,
-    color: colors.surface,
-    fontWeight: typography.fontWeight.regular,
+    color: colors.white,
+    fontWeight: '400',
     marginTop: -2,
   },
 });

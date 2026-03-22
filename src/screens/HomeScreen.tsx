@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, RefreshControl } from 'react-native';
-import { Note, loadNotes, deleteNote as deleteNoteFromStorage } from '../storage/storage';
+import { Note } from '../types';
 import { NoteCard } from '../components/NoteCard';
 import { FAB } from '../components/FAB';
 import { colors, spacing, typography, globalStyles } from '../styles/theme';
+import { loadNotes, deleteNote as deleteNoteFromStorage } from '../storage/storage';
 
 interface HomeScreenProps {
   onNavigateToEditor: (note?: Note) => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToEditor }) => {
+export const HomeScreen = ({ onNavigateToEditor }: HomeScreenProps) => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -38,10 +39,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToEditor }) =>
   };
 
   const renderEmptyComponent = () => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xl }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xxl }}>
       <Text
         style={{
           fontSize: typography.fontSize.lg,
+          fontWeight: '500',
           color: colors.textSecondary,
           textAlign: 'center',
         }}
@@ -51,7 +53,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToEditor }) =>
       <Text
         style={{
           fontSize: typography.fontSize.sm,
-          color: colors.textSecondary,
+          color: colors.textMuted,
           textAlign: 'center',
           marginTop: spacing.sm,
         }}
@@ -63,27 +65,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToEditor }) =>
 
   return (
     <View style={globalStyles.container}>
-      <View
-        style={{
-          paddingTop: 50,
-          paddingBottom: spacing.md,
-          backgroundColor: colors.surface,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.border,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: typography.fontSize.xl,
-            fontWeight: typography.fontWeight.bold,
-            color: colors.text,
-            paddingHorizontal: spacing.md,
-          }}
-        >
-          My Notes
-        </Text>
-      </View>
-
       <FlatList
         data={notes}
         keyExtractor={(item) => item.id}
@@ -96,13 +77,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToEditor }) =>
         )}
         contentContainerStyle={{
           paddingTop: spacing.md,
-          paddingBottom: 100,
+          paddingBottom: 120,
         }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={colors.accent}
+            tintColor={colors.primary}
           />
         }
         ListEmptyComponent={renderEmptyComponent}

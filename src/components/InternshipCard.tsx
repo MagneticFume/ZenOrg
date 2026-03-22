@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
 import { Internship } from '../types';
-import { colors, spacing, typography } from '../styles/theme';
+import { colors, spacing, typography, borderRadius, shadows } from '../styles/theme';
 
 interface InternshipCardProps {
   internship: Internship;
@@ -12,15 +12,15 @@ interface InternshipCardProps {
 const getStatusColor = (status: Internship['status']): string => {
   switch (status) {
     case 'Applied':
-      return '#5C6BC0';
+      return colors.statusApplied;
     case 'Interview':
-      return '#FFA726';
+      return colors.statusInterview;
     case 'Rejected':
-      return '#EF5350';
+      return colors.statusRejected;
     case 'Offer':
-      return '#66BB6A';
+      return colors.statusOffer;
     default:
-      return '#757575';
+      return colors.textMuted;
   }
 };
 
@@ -63,15 +63,11 @@ export const InternshipCard = ({ internship, onPress, onDelete }: InternshipCard
         delayLongPress={500}
         style={{
           backgroundColor: colors.surface,
-          marginHorizontal: spacing.md,
+          marginHorizontal: spacing.lg,
           marginVertical: spacing.sm,
-          borderRadius: 12,
-          padding: spacing.md,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.05,
-          shadowRadius: 2,
-          elevation: 2,
+          borderRadius: borderRadius.lg,
+          padding: spacing.lg,
+          ...shadows.medium,
         }}
       >
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -79,8 +75,8 @@ export const InternshipCard = ({ internship, onPress, onDelete }: InternshipCard
             <Text
               style={{
                 fontSize: typography.fontSize.lg,
-                fontWeight: typography.fontWeight.semibold,
-                color: colors.text,
+                fontWeight: '600',
+                color: colors.textPrimary,
                 marginBottom: spacing.xs,
               }}
             >
@@ -89,8 +85,9 @@ export const InternshipCard = ({ internship, onPress, onDelete }: InternshipCard
             <Text
               style={{
                 fontSize: typography.fontSize.md,
-                color: colors.accent,
-                marginBottom: spacing.xs,
+                fontWeight: '500',
+                color: colors.primary,
+                marginBottom: spacing.sm,
               }}
             >
               {internship.role}
@@ -100,17 +97,17 @@ export const InternshipCard = ({ internship, onPress, onDelete }: InternshipCard
                 style={{
                   backgroundColor: getStatusColor(internship.status),
                   paddingHorizontal: spacing.sm,
-                  paddingVertical: 2,
-                  borderRadius: 4,
+                  paddingVertical: 4,
+                  borderRadius: borderRadius.pill,
                   marginRight: spacing.sm,
                 }}
               >
-                <Text style={{ color: colors.surface, fontSize: typography.fontSize.xs, fontWeight: typography.fontWeight.medium }}>
+                <Text style={{ color: colors.white, fontSize: typography.fontSize.xs, fontWeight: '600' }}>
                   {internship.status}
                 </Text>
               </View>
-              <Text style={{ fontSize: typography.fontSize.sm, color: colors.textSecondary }}>
-                Applied: {new Date(internship.dateApplied).toLocaleDateString()}
+              <Text style={{ fontSize: typography.fontSize.sm, color: colors.textSecondary, fontWeight: '400' }}>
+                {new Date(internship.dateApplied).toLocaleDateString()}
               </Text>
             </View>
             {internship.notes ? (
@@ -119,6 +116,7 @@ export const InternshipCard = ({ internship, onPress, onDelete }: InternshipCard
                   fontSize: typography.fontSize.sm,
                   color: colors.textSecondary,
                   fontStyle: 'italic',
+                  marginTop: spacing.xs,
                 }}
                 numberOfLines={2}
               >

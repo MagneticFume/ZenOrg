@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Note, createNote, updateNote } from '../storage/storage';
-import { colors, spacing, typography } from '../styles/theme';
+import { createNote, updateNote } from '../storage/storage';
+import { Note } from '../types';
+import { colors, spacing, typography, borderRadius } from '../styles/theme';
 
 interface EditorScreenProps {
   note?: Note;
   onBack: () => void;
 }
 
-export const EditorScreen: React.FC<EditorScreenProps> = ({ note, onBack }) => {
+export const EditorScreen = ({ note, onBack }: EditorScreenProps) => {
   const [title, setTitle] = useState(note?.title || '');
   const [content, setContent] = useState(note?.content || '');
   const [isDirty, setIsDirty] = useState(false);
@@ -45,7 +46,7 @@ export const EditorScreen: React.FC<EditorScreenProps> = ({ note, onBack }) => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: colors.background }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View
@@ -58,17 +59,17 @@ export const EditorScreen: React.FC<EditorScreenProps> = ({ note, onBack }) => {
           backgroundColor: colors.surface,
           borderBottomWidth: 1,
           borderBottomColor: colors.border,
-          paddingHorizontal: spacing.md,
+          paddingHorizontal: spacing.lg,
         }}
       >
         <TouchableOpacity onPress={onBack} style={{ padding: spacing.xs }}>
-          <Text style={{ fontSize: typography.fontSize.lg, color: colors.accent }}>Cancel</Text>
+          <Text style={{ fontSize: typography.fontSize.lg, color: colors.textSecondary, fontWeight: '500' }}>Cancel</Text>
         </TouchableOpacity>
         <Text
           style={{
             fontSize: typography.fontSize.lg,
-            fontWeight: typography.fontWeight.semibold,
-            color: colors.text,
+            fontWeight: '600',
+            color: colors.textPrimary,
           }}
         >
           {note ? 'Edit Note' : 'New Note'}
@@ -76,13 +77,12 @@ export const EditorScreen: React.FC<EditorScreenProps> = ({ note, onBack }) => {
         <TouchableOpacity 
           onPress={handleSave} 
           style={{ padding: spacing.xs }}
-          disabled={!isDirty && title.trim() === '' && content.trim() === ''}
         >
           <Text 
             style={{ 
               fontSize: typography.fontSize.lg, 
-              color: isDirty || title.trim() || content.trim() ? colors.accent : colors.textSecondary,
-              fontWeight: typography.fontWeight.semibold,
+              color: isDirty || title.trim() || content.trim() ? colors.primary : colors.textMuted,
+              fontWeight: '600',
             }}
           >
             Save
@@ -96,17 +96,17 @@ export const EditorScreen: React.FC<EditorScreenProps> = ({ note, onBack }) => {
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"
       >
-        <View style={{ flex: 1, padding: spacing.md }}>
+        <View style={{ flex: 1, padding: spacing.lg }}>
           <TextInput
             style={{
               fontSize: typography.fontSize.xl,
-              fontWeight: typography.fontWeight.bold,
-              color: colors.text,
-              marginBottom: spacing.md,
+              fontWeight: '700',
+              color: colors.textPrimary,
+              marginBottom: spacing.lg,
               minHeight: 40,
             }}
             placeholder="Title"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={title}
             onChangeText={handleTitleChange}
             multiline={false}
@@ -116,12 +116,12 @@ export const EditorScreen: React.FC<EditorScreenProps> = ({ note, onBack }) => {
             style={{
               flex: 1,
               fontSize: typography.fontSize.md,
-              color: colors.text,
-              lineHeight: 24,
+              color: colors.textPrimary,
+              lineHeight: 26,
               minHeight: 300,
             }}
             placeholder="Start writing..."
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={content}
             onChangeText={handleContentChange}
             multiline

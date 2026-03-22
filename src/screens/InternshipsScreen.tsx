@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
+import { View, Text, FlatList, RefreshControl } from 'react-native';
 import { InternshipCard } from '../components/InternshipCard';
 import { FAB } from '../components/FAB';
 import { colors, spacing, typography, globalStyles } from '../styles/theme';
@@ -38,10 +38,11 @@ export const InternshipsScreen = ({ onNavigateToEditor }: InternshipsScreenProps
   };
 
   const renderEmptyComponent = () => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xl }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xxl }}>
       <Text
         style={{
           fontSize: typography.fontSize.lg,
+          fontWeight: '500',
           color: colors.textSecondary,
           textAlign: 'center',
         }}
@@ -51,7 +52,7 @@ export const InternshipsScreen = ({ onNavigateToEditor }: InternshipsScreenProps
       <Text
         style={{
           fontSize: typography.fontSize.sm,
-          color: colors.textSecondary,
+          color: colors.textMuted,
           textAlign: 'center',
           marginTop: spacing.sm,
         }}
@@ -63,27 +64,6 @@ export const InternshipsScreen = ({ onNavigateToEditor }: InternshipsScreenProps
 
   return (
     <View style={globalStyles.container}>
-      <View
-        style={{
-          paddingTop: 50,
-          paddingBottom: spacing.md,
-          backgroundColor: colors.surface,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.border,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: typography.fontSize.xl,
-            fontWeight: typography.fontWeight.bold,
-            color: colors.text,
-            paddingHorizontal: spacing.md,
-          }}
-        >
-          Internship Applications
-        </Text>
-      </View>
-
       <FlatList
         data={internships}
         keyExtractor={(item) => item.id}
@@ -96,13 +76,13 @@ export const InternshipsScreen = ({ onNavigateToEditor }: InternshipsScreenProps
         )}
         contentContainerStyle={{
           paddingTop: spacing.md,
-          paddingBottom: 100,
+          paddingBottom: 120,
         }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={colors.accent}
+            tintColor={colors.primary}
           />
         }
         ListEmptyComponent={renderEmptyComponent}

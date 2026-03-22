@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
-import { createInternship, updateInternship } from '../storage/storage';
-import { colors, spacing, typography } from '../styles/theme';
+import { createInternship, updateInternship, loadInternshipById } from '../storage/storage';
+import { colors, spacing, typography, borderRadius } from '../styles/theme';
 
 interface InternshipEditorProps {
   internshipId?: string;
@@ -15,8 +15,36 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
   const [role, setRole] = useState('');
   const [portal, setPortal] = useState('');
   const [dateApplied, setDateApplied] = useState(new Date().toISOString().split('T')[0]);
-  const [status, setStatus] = useState('Applied');
+  const [status, setStatus] = useState<'Applied' | 'Interview' | 'Rejected' | 'Offer'>('Applied');
   const [notes, setNotes] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Load internship data when editing
+  useEffect(() => {
+    if (internshipId) {
+      loadInternshipData();
+    }
+  }, [internshipId]);
+
+  const loadInternshipData = async () => {
+    setIsLoading(true);
+    try {
+      const internship = await loadInternshipById(internshipId!);
+      if (internship) {
+        setCompany(internship.company || '');
+        setRole(internship.role || '');
+        setPortal(internship.portal || '');
+        setDateApplied(internship.dateApplied || new Date().toISOString().split('T')[0]);
+        setStatus(internship.status || 'Applied');
+        setNotes(internship.notes || '');
+      }
+    } catch (error) {
+      console.error('Error loading internship:', error);
+      Alert.alert('Error', 'Failed to load internship data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     try {
@@ -27,21 +55,21 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
 
       if (internshipId) {
         await updateInternship(internshipId, {
-          company,
-          role,
-          portal,
+          company: company.trim(),
+          role: role.trim(),
+          portal: portal.trim(),
           dateApplied,
           status,
-          notes,
+          notes: notes.trim(),
         });
       } else {
         await createInternship({
-          company,
-          role,
-          portal,
+          company: company.trim(),
+          role: role.trim(),
+          portal: portal.trim(),
           dateApplied,
           status,
-          notes,
+          notes: notes.trim(),
         });
       }
       onBack();
@@ -85,13 +113,13 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
         }}
       >
         <TouchableOpacity onPress={onBack} style={{ padding: spacing.xs }}>
-          <Text style={{ fontSize: typography.fontSize.lg, color: colors.accent }}>Cancel</Text>
+          <Text style={{ fontSize: typography.fontSize.lg, color: colors.textSecondary, fontWeight: '500' }}>Cancel</Text>
         </TouchableOpacity>
         <Text
           style={{
             fontSize: typography.fontSize.lg,
-            fontWeight: typography.fontWeight.semibold,
-            color: colors.text,
+            fontWeight: '600',
+            color: colors.textPrimary,
           }}
         >
           {internshipId ? 'Edit Application' : 'New Application'}
@@ -100,8 +128,8 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
           <Text 
             style={{ 
               fontSize: typography.fontSize.lg, 
-              color: colors.accent,
-              fontWeight: typography.fontWeight.semibold,
+              color: colors.primary,
+              fontWeight: '600',
             }}
           >
             Save
@@ -118,7 +146,7 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
         <View style={{ flex: 1, padding: spacing.md }}>
           <Text style={{
             fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
+            fontWeight: '500',
             color: colors.textSecondary,
             marginBottom: spacing.xs,
           }}>
@@ -126,24 +154,24 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
           </Text>
           <TextInput
             style={{
-              backgroundColor: colors.surface,
-              borderRadius: 8,
+              backgroundColor: colors.surfaceSecondary,
+              borderRadius: borderRadius.md,
               padding: spacing.md,
               fontSize: typography.fontSize.md,
-              color: colors.text,
+              color: colors.textPrimary,
               borderWidth: 1,
               borderColor: colors.border,
               marginBottom: spacing.md,
             }}
             placeholder="e.g., Google, Microsoft"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={company}
             onChangeText={(text) => setCompany(text)}
           />
 
           <Text style={{
             fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
+            fontWeight: '500',
             color: colors.textSecondary,
             marginBottom: spacing.xs,
           }}>
@@ -151,24 +179,24 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
           </Text>
           <TextInput
             style={{
-              backgroundColor: colors.surface,
-              borderRadius: 8,
+              backgroundColor: colors.surfaceSecondary,
+              borderRadius: borderRadius.md,
               padding: spacing.md,
               fontSize: typography.fontSize.md,
-              color: colors.text,
+              color: colors.textPrimary,
               borderWidth: 1,
               borderColor: colors.border,
               marginBottom: spacing.md,
             }}
             placeholder="e.g., Software Engineering Intern"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={role}
             onChangeText={(text) => setRole(text)}
           />
 
           <Text style={{
             fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
+            fontWeight: '500',
             color: colors.textSecondary,
             marginBottom: spacing.xs,
           }}>
@@ -176,24 +204,24 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
           </Text>
           <TextInput
             style={{
-              backgroundColor: colors.surface,
-              borderRadius: 8,
+              backgroundColor: colors.surfaceSecondary,
+              borderRadius: borderRadius.md,
               padding: spacing.md,
               fontSize: typography.fontSize.md,
-              color: colors.text,
+              color: colors.textPrimary,
               borderWidth: 1,
               borderColor: colors.border,
               marginBottom: spacing.md,
             }}
             placeholder="e.g., LinkedIn, Company Website"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={portal}
             onChangeText={(text) => setPortal(text)}
           />
 
           <Text style={{
             fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
+            fontWeight: '500',
             color: colors.textSecondary,
             marginBottom: spacing.xs,
           }}>
@@ -201,24 +229,24 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
           </Text>
           <TextInput
             style={{
-              backgroundColor: colors.surface,
-              borderRadius: 8,
+              backgroundColor: colors.surfaceSecondary,
+              borderRadius: borderRadius.md,
               padding: spacing.md,
               fontSize: typography.fontSize.md,
-              color: colors.text,
+              color: colors.textPrimary,
               borderWidth: 1,
               borderColor: colors.border,
               marginBottom: spacing.md,
             }}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={dateApplied}
             onChangeText={(text) => setDateApplied(text)}
           />
 
           <Text style={{
             fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
+            fontWeight: '500',
             color: colors.textSecondary,
             marginBottom: spacing.xs,
           }}>
@@ -228,25 +256,25 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
             {STATUSES.map((s) => (
               <TouchableOpacity
                 key={s}
-                onPress={() => setStatus(s)}
+                onPress={() => setStatus(s as 'Applied' | 'Interview' | 'Rejected' | 'Offer')}
                 style={[
                   {
                     paddingHorizontal: spacing.md,
                     paddingVertical: spacing.sm,
-                    borderRadius: 6,
+                    borderRadius: borderRadius.pill,
                     marginRight: spacing.sm,
                     marginBottom: spacing.sm,
                     borderWidth: 1,
                     borderColor: colors.border,
-                    backgroundColor: status === s ? getStatusColor(s) : colors.surface,
+                    backgroundColor: status === s ? getStatusColor(s) : colors.surfaceSecondary,
                   },
                 ]}
               >
                 <Text
                   style={{
                     fontSize: typography.fontSize.sm,
-                    fontWeight: typography.fontWeight.medium,
-                    color: status === s ? colors.surface : colors.textSecondary,
+                    fontWeight: '500',
+                    color: status === s ? colors.white : colors.textSecondary,
                   }}
                 >
                   {s}
@@ -257,7 +285,7 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
 
           <Text style={{
             fontSize: typography.fontSize.sm,
-            fontWeight: typography.fontWeight.medium,
+            fontWeight: '500',
             color: colors.textSecondary,
             marginBottom: spacing.xs,
           }}>
@@ -265,11 +293,11 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
           </Text>
           <TextInput
             style={{
-              backgroundColor: colors.surface,
-              borderRadius: 8,
+              backgroundColor: colors.surfaceSecondary,
+              borderRadius: borderRadius.md,
               padding: spacing.md,
               fontSize: typography.fontSize.md,
-              color: colors.text,
+              color: colors.textPrimary,
               borderWidth: 1,
               borderColor: colors.border,
               minHeight: 100,
@@ -277,7 +305,7 @@ export const InternshipEditor = ({ internshipId, onBack }: InternshipEditorProps
               marginBottom: spacing.lg,
             }}
             placeholder="Add any notes about this application..."
-            placeholderTextColor={colors.textSecondary}
+            placeholderTextColor={colors.textMuted}
             value={notes}
             onChangeText={(text) => setNotes(text)}
             multiline
