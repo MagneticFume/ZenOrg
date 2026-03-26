@@ -1,185 +1,478 @@
-# ZenOrg - Minimal Notes & Internship Tracker App
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZenOrg — README</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f11;
+    --surface: #161a1e;
+    --border: #252b32;
+    --text: #e2e8ef;
+    --muted: #6b7885;
+    --accent: #4f9cf9;
+    --accent2: #a78bfa;
+    --green: #4ade80;
+    --orange: #fb923c;
+    --red: #f87171;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
 
-A clean, minimal dual-purpose app built with React Native and Expo for managing notes and tracking internship applications.
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-## Features
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
 
-### 📝 NOTES TAB
-- Create, edit, and delete notes
-- Home screen with list of all notes (title + preview)
-- Long press to delete notes
-- Local storage with AsyncStorage
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
 
-### 💼 INTERNSHIPS TAB
-- Track internship applications
-- Each entry includes:
-  - Company name
-  - Role/position
-  - Where applied (website or portal name)
-  - Date applied
-  - Status (Applied, Interview, Rejected, Offer)
-  - Notes/remarks
-- Tap an entry to view and edit it
-- Long press to delete an entry
-- Data saved locally with AsyncStorage
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
 
-### 🎨 DESIGN
-- Clean, minimal UI with bottom tab navigation
-- Calm color palette (whites, soft greys, subtle accent colors)
-- Status-based color coding for internship applications
-- Smooth animations using React Native's Animated API only
-- No splash screen library - uses Expo default
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 40px;
+  }
 
-## Tech Stack
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
 
-- React Native
-- Expo
-- AsyncStorage for local persistence
-- TypeScript-free JavaScript for simplicity
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { margin: 0 6px; }
 
-## Constraints Followed
+  .project-name {
+    font-family: var(--sans);
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--text) 40%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
-✅ NO react-native-reanimated  
-✅ NO react-native-gesture-handler  
-✅ NO rich text editors  
-✅ Only core Expo-managed dependencies  
-✅ Minimal dependency list  
+  .tagline {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
 
-## Getting Started
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 
-### Prerequisites
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.03em;
+  }
 
-- Node.js (v16 or higher recommended)
-- npm or yarn
-- Expo CLI
-- Android device/emulator (for testing)
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge.platform .dot { background: var(--accent); }
+  .badge.lang .dot { background: var(--orange); }
+  .badge.license .dot { background: var(--green); }
+  .badge.deps .dot { background: var(--accent2); }
+  .badge.vibe .dot { background: var(--red); }
 
-### Installation
+  section { margin-bottom: 40px; }
 
-1. Navigate to the project directory:
-```bash
-cd ZenOrg/ZenOrg
-```
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-2. Install dependencies (already installed):
-```bash
-npm install
-```
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
 
-3. Start the development server:
-```bash
-npm start
-```
+  p { color: #9aa5b4; margin-bottom: 12px; }
 
-4. Run on Android:
-- Press `a` in the terminal to run on Android emulator
-- Or scan the QR code with Expo Go app on your Android device
+  .notice {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    line-height: 1.8;
+  }
 
-## Project Structure
+  .notice strong { color: var(--orange); font-weight: 500; }
 
-```
-ZenOrg/
-├── src/
-│   ├── components/
-│   │   ├── FAB.tsx              # Floating Action Button
-│   │   ├── NoteCard.tsx         # Note card component with delete
-│   │   └── InternshipCard.tsx   # Internship card component
-│   ├── screens/
-│   │   ├── HomeScreen.tsx       # Notes list screen
-│   │   ├── EditorScreen.tsx     # Note creation/editing screen
-│   │   ├── InternshipsScreen.tsx # Internships list screen
-│   │   └── InternshipEditor.tsx # Internship form screen
-│   ├── storage/
-│   │   └── storage.ts           # AsyncStorage operations
-│   ├── styles/
-│   │   └── theme.ts             # Color palette and styling constants
-│   └── types/
-│       └── index.ts             # TypeScript type definitions
-├── App.js                       # Main app with tab navigation
-└── package.json
-```
+  .notice.info {
+    border-left-color: var(--accent);
+  }
 
-## Usage
+  .notice.info strong { color: var(--accent); }
 
-### Notes Tab
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
 
-#### Creating a Note
-1. Tap the floating action button (+) on the home screen
-2. Enter a title and content
-3. Tap "Save" in the top right corner
+  .feature-card { background: var(--surface); padding: 20px; }
+  .feature-card:hover { background: #1c2028; }
 
-#### Editing a Note
-1. Tap on any note from the notes list
-2. Modify the content
-3. Tap "Save" to save changes
+  .feature-card .icon { font-size: 18px; margin-bottom: 10px; display: block; }
 
-#### Deleting a Note
-1. Long press on a note card
-2. Confirm deletion in the alert dialog
+  .feature-card h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
 
-### Internships Tab
+  .feature-card ul { list-style: none; color: var(--muted); font-size: 12px; }
 
-#### Adding an Application
-1. Switch to the "Internships" tab at the bottom
-2. Tap the floating action button (+)
-3. Fill in the details:
-   - Company Name (required)
-   - Role/Position (required)
-   - Where Applied (optional)
-   - Date Applied (optional)
-   - Status (tap to select from: Applied, Interview, Rejected, Offer)
-   - Notes/Remarks (optional)
-4. Tap "Save"
+  .feature-card ul li {
+    padding: 2px 0;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
 
-#### Editing an Application
-1. Tap on any internship entry
-2. Modify the details
-3. Tap "Save" to save changes
+  .feature-card ul li::before {
+    content: '›';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
 
-#### Deleting an Application
-1. Long press on an internship card
-2. Confirm deletion in the alert dialog
+  .stack-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
 
-## Design
+  .stack-item { background: var(--surface); padding: 14px 18px; font-size: 13px; }
 
-The app features a calm, minimal design with status-based color coding:
+  .stack-item.label {
+    color: var(--muted);
+    font-size: 12px;
+    border-right: 1px solid var(--border);
+  }
 
-### Colors
-- **Background**: Soft white (#FAFAFA)
-- **Surface**: Pure white (#FFFFFF) for cards
-- **Text**: Dark grey (#2C2C2C) for primary text
-- **Secondary Text**: Light grey (#757575)
-- **Accent**: Subtle blue (#5C6BC0) for interactive elements
+  .stack-item.value { color: var(--text); }
 
-### Status Colors (Internships)
-- **Applied**: Blue (#5C6BC0)
-- **Interview**: Orange (#FFA726)
-- **Rejected**: Red (#EF5350)
-- **Offer**: Green (#66BB6A)
+  .stack-item .tag {
+    display: inline-block;
+    background: rgba(79, 156, 249, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(79, 156, 249, 0.25);
+    border-radius: 3px;
+    padding: 1px 7px;
+    font-size: 11px;
+    margin: 2px 3px 2px 0;
+  }
 
-## Animations
+  .tree {
+    background: #0a0c0e;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-size: 12.5px;
+    color: #9aa5b4;
+    line-height: 2;
+  }
 
-All animations are built using React Native's native `Animated` API:
-- Delete animations for cards
-- Smooth transitions
-- No external animation libraries used
+  .tree .dir { color: var(--accent); }
+  .tree .file { color: #9aa5b4; }
+  .tree .comment { color: #4b5563; }
 
-## Navigation
+  .constraints {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
 
-The app uses a simple bottom tab navigation system:
-- **Notes Tab**: Access your notes
-- **Internships Tab**: Track your applications
-- Tabs are hidden when editing to focus on content
+  .constraint-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
 
-## Dependencies
+  .constraint-item .check { color: var(--green); font-size: 14px; flex-shrink: 0; }
 
-Minimal dependencies for a lightweight app:
-- `expo` - Core Expo framework
-- `expo-status-bar` - Status bar management
-- `@react-native-async-storage/async-storage` - Local data persistence
-- `react` - UI library
-- `react-native` - Mobile framework
+  .status-grid { display: flex; gap: 10px; flex-wrap: wrap; }
 
-## License
+  .status-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    border: 1px solid;
+  }
 
-MIT
+  .status-pill.applied   { background: rgba(79,156,249,0.08); border-color: rgba(79,156,249,0.3); color: var(--accent); }
+  .status-pill.interview { background: rgba(251,146,60,0.08); border-color: rgba(251,146,60,0.3); color: var(--orange); }
+  .status-pill.rejected  { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); color: var(--red); }
+  .status-pill.offer     { background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.3); color: var(--green); }
+
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    margin-top: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .constraints  { grid-template-columns: 1fr; }
+    .stack-row { grid-template-columns: 1fr; }
+    .stack-item.label { border-right: none; border-bottom: 1px solid var(--border); }
+    .project-name { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="header">
+    <div class="breadcrumb">
+      <a href="#">MagneticFume</a>
+      <span>/</span>
+      <a href="#">ZenOrg</a>
+    </div>
+
+    <div class="project-name">ZenOrg</div>
+    <p class="tagline">Minimal notes &amp; internship tracker — React Native + Expo</p>
+
+    <div class="badges">
+      <div class="badge platform"><span class="dot"></span>Android</div>
+      <div class="badge lang"><span class="dot"></span>JavaScript</div>
+      <div class="badge deps"><span class="dot"></span>Expo Managed</div>
+      <div class="badge license"><span class="dot"></span>MIT</div>
+      <div class="badge vibe"><span class="dot"></span>Vibe Coded</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-label">about</div>
+    <p>
+      ZenOrg is a lightweight dual-purpose productivity app. One tab for notes, one tab for tracking internship applications — nothing more, nothing less. Built with a deliberately small dependency footprint on React Native + Expo.
+    </p>
+
+    <div class="notice">
+      <strong>⚡ Vibe coded project.</strong> This app was built through iterative AI-assisted development. A bug-free experience is not guaranteed. Use at your own discretion.
+    </div>
+
+    <div class="notice info">
+      <strong>🚧 Feature updates paused.</strong> New features will be added after completing React JS fundamentals. The current build is stable enough for everyday use.
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">install</div>
+    <p style="color: var(--muted); font-size: 13px;">
+      A pre-built APK is available in the <a href="#" style="color: var(--accent); text-decoration: none;">Releases</a> tab. Download and sideload directly onto your Android device — no build setup required.
+    </p>
+  </section>
+
+  <section>
+    <div class="section-label">features</div>
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <span class="icon">📝</span>
+        <h3>Notes</h3>
+        <ul>
+          <li>Create, edit, delete notes</li>
+          <li>Title + content preview on home screen</li>
+          <li>Long press to delete</li>
+          <li>Persisted with AsyncStorage</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <span class="icon">💼</span>
+        <h3>Internship Tracker</h3>
+        <ul>
+          <li>Company, role, portal, date fields</li>
+          <li>Status tracking: Applied → Offer</li>
+          <li>Inline notes per application</li>
+          <li>Tap to edit, long press to delete</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <span class="icon">🎨</span>
+        <h3>Design</h3>
+        <ul>
+          <li>Bottom tab navigation</li>
+          <li>Status-based color coding</li>
+          <li>Calm whites/greys palette</li>
+          <li>Tabs hidden during editing</li>
+        </ul>
+      </div>
+
+      <div class="feature-card">
+        <span class="icon">⚙️</span>
+        <h3>Animations</h3>
+        <ul>
+          <li>React Native Animated API only</li>
+          <li>Card delete animations</li>
+          <li>Smooth screen transitions</li>
+          <li>No external animation libs</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">tech stack</div>
+    <div class="stack-row">
+      <div class="stack-item label">Framework</div>
+      <div class="stack-item value">
+        <span class="tag">React Native</span>
+        <span class="tag">Expo (Managed)</span>
+      </div>
+
+      <div class="stack-item label">Language</div>
+      <div class="stack-item value">
+        <span class="tag">JavaScript</span>
+        <span class="tag">TypeScript types (index.ts)</span>
+      </div>
+
+      <div class="stack-item label">Persistence</div>
+      <div class="stack-item value">
+        <span class="tag">@react-native-async-storage/async-storage</span>
+      </div>
+
+      <div class="stack-item label">Navigation</div>
+      <div class="stack-item value">
+        <span class="tag">Bottom Tab Navigator</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">project structure</div>
+    <div class="tree">
+<span class="dir">ZenOrg/</span>
+├── <span class="dir">src/</span>
+│   ├── <span class="dir">components/</span>
+│   │   ├── <span class="file">FAB.tsx</span>              <span class="comment">floating action button</span>
+│   │   ├── <span class="file">NoteCard.tsx</span>         <span class="comment">note card + delete</span>
+│   │   └── <span class="file">InternshipCard.tsx</span>   <span class="comment">internship card</span>
+│   ├── <span class="dir">screens/</span>
+│   │   ├── <span class="file">HomeScreen.tsx</span>        <span class="comment">notes list</span>
+│   │   ├── <span class="file">EditorScreen.tsx</span>      <span class="comment">note editor</span>
+│   │   ├── <span class="file">InternshipsScreen.tsx</span> <span class="comment">applications list</span>
+│   │   └── <span class="file">InternshipEditor.tsx</span>  <span class="comment">application form</span>
+│   ├── <span class="dir">storage/</span>
+│   │   └── <span class="file">storage.ts</span>            <span class="comment">AsyncStorage operations</span>
+│   ├── <span class="dir">styles/</span>
+│   │   └── <span class="file">theme.ts</span>              <span class="comment">color palette + constants</span>
+│   └── <span class="dir">types/</span>
+│       └── <span class="file">index.ts</span>              <span class="comment">type definitions</span>
+├── <span class="file">App.js</span>                        <span class="comment">root + tab navigation</span>
+└── <span class="file">package.json</span></div>
+  </section>
+
+  <section>
+    <div class="section-label">status colors</div>
+    <div class="status-grid">
+      <div class="status-pill applied">   ● Applied</div>
+      <div class="status-pill interview"> ● Interview</div>
+      <div class="status-pill rejected">  ● Rejected</div>
+      <div class="status-pill offer">     ● Offer</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">dependency constraints</div>
+    <div class="constraints">
+      <div class="constraint-item"><span class="check">✓</span> No react-native-reanimated</div>
+      <div class="constraint-item"><span class="check">✓</span> No react-native-gesture-handler</div>
+      <div class="constraint-item"><span class="check">✓</span> No rich text editors</div>
+      <div class="constraint-item"><span class="check">✓</span> Core Expo-managed deps only</div>
+      <div class="constraint-item"><span class="check">✓</span> Minimal dependency footprint</div>
+      <div class="constraint-item"><span class="check">✓</span> Native Animated API only</div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>MIT License · <a href="#">MagneticFume</a></span>
+    <span style="color: var(--border)">ZenOrg · React Native + Expo</span>
+  </footer>
+
+</div>
+</body>
+</html>
